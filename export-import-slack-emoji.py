@@ -3,7 +3,6 @@ import json
 import re
 import os
 import time
-import re
 from os import walk
 
 # --------------------------------------
@@ -56,7 +55,7 @@ for emojiName in emojiNameToUrlDict:
 
         response = requests.get(emojiUrl)
 
-        # Write the resposne to a file
+        # Write the response to a file
         invalidFileNameCharatersRegex = ':|;'
         emojiFileName = f'{emojiDownloadFolder}/{emojiName}{emojiFileExtension}'
         emojiFileName = re.sub(invalidFileNameCharatersRegex, '_', emojiFileName)
@@ -92,7 +91,7 @@ for emojiFileName in existingEmojiFileNames:
         }
 
         files = [
-            ('image', open(f'slackEmoji/{emojiFileName}','rb'))
+            ('image', open(f'{emojiDownloadFolder}/{emojiFileName}','rb'))
         ]
 
         response = requests.request("POST", url, headers=destinationSlackOrgHeaders, data = payload, files = files)
