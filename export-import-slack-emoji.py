@@ -39,6 +39,7 @@ def getEmojiNameToUrlDict(headers):
 # ----------------
 
 emojiNameToUrlDict = getEmojiNameToUrlDict(sourceSlackOrgHeaders)
+downloadedEmojiFileNames = []
 
 for emojiName in emojiNameToUrlDict:
      
@@ -57,23 +58,25 @@ for emojiName in emojiNameToUrlDict:
 
         # Write the response to a file
         invalidFileNameCharatersRegex = ':|;'
-        emojiFileName = f'{emojiDownloadFolder}/{emojiName}{emojiFileExtension}'
         emojiFileName = re.sub(invalidFileNameCharatersRegex, '_', emojiFileName)
-        open(emojiFileName, 'wb').write(response.content)
+        emojiFilePath = f'{emojiDownloadFolder}/{emojiName}{emojiFileExtension}'
+        open(emojiFilePath, 'wb').write(response.content)
+        downloadedEmojiFileNames.append(emojiFileName)
 
-        print(f'Saved {emojiFileName}')
+        print(f'Saved {emojiFilePath}')
 
 # ----------------
 # Do the uploading
 # ----------------
 
-# get the existing emoji so we scan skip trying to upload any already existing emoji
+# get the existing emoji from the destination org 
+# so we scan skip trying to upload any already existing emoji
 destinationEmojiNameToUrlDict = getEmojiNameToUrlDict(destinationSlackOrgHeaders)
 
 url = 'https://slack.com/api/emoji.add'
 emojiNum = 0
 
-for emojiFileName in existingEmojiFileNames:
+for emojiFileName in downloadedEmojiFileNames:
 
     emojiFileNameWithoutExtension = emojiFileExtension = re.search('([^\.]+)\.', emojiFileName).group(1)
 
